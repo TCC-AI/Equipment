@@ -822,11 +822,11 @@
                 <i class="fa-solid fa-microphone"></i>
             </button>
             <p id="voiceStatus"
-                style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; height: 1.2em;">資產管理數位主任Jennie<br>點擊麥克風開始說話</p>
+                style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; height: 1.2em;">點擊麥克風開始說話</p>
         </div>
         <div class="chat-body" id="chatBody">
             <div class="chat-message bot">
-                你好！我是昶青資產管理數位主任Jennie。您可以點擊上方麥克風直接跟我對話，或在下方輸入文字。
+                你好！我是您的專屬數位助理。您可以點擊上方麥克風直接跟我對話，或在下方輸入文字。
             </div>
             <!-- Typing indicator exists in CSS but added dynamically via JS usually, ensuring structure -->
             <div class="typing-indicator" id="typingIndicator">思考中...</div>
@@ -850,7 +850,7 @@
          * Config
          * Replace this URL with your actual Google Apps Script Web App URL
          */
-        const API_URL = 'https://script.google.com/macros/s/AKfycby2btoSRXZCgabXVbjKHHNczr0eG74ISPEcgSK3c3pVcwCbPg1wgcYh9fdj_rM6lRyErA/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbypfT5-9VOHry4pk_BwEL0R4pizqJlcv-uJK49NqOcYOHrsVpZW5WKSYau8jRWbEinjxg/exec';
         // State
         let allSheets = [];
         let currentData = [];
@@ -1149,6 +1149,8 @@
         let recognition = null;
         let isListening = false;
         let currentAudio = null;
+        // AudioContext for Pitch Shifting
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         // Initialize Speech Recognition
         if ('webkitSpeechRecognition' in window) {
             recognition = new webkitSpeechRecognition();
@@ -1194,7 +1196,9 @@
             }
             // If audio playing, stop it
             if (currentAudio) {
-                currentAudio.pause();
+                try {
+                    currentAudio.stop(); // Web Audio API uses stop()
+                } catch (e) { /* ignore if already stopped */ }
                 currentAudio = null;
                 resetVoiceUI();
                 return;
@@ -1203,6 +1207,10 @@
                 recognition.stop();
                 resetVoiceUI();
             } else {
+                // Resume Context if suspended (browser requirements)
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
                 recognition.start();
             }
         }
@@ -1224,11 +1232,12 @@
             // If closing, stop audio
             if (!chatWindow.classList.contains('active')) {
                 if (currentAudio) {
-                    currentAudio.pause();
+                    try { currentAudio.stop(); } catch (e) { }
                     currentAudio = null;
                 }
                 resetVoiceUI();
             } else {
+                if (audioCtx.state === 'suspended') audioCtx.resume(); // Resume on open
                 document.getElementById('chatInput').focus();
             }
         }
@@ -1245,7 +1254,7 @@
             if (!message) return;
             // Stop audio if playing
             if (currentAudio) {
-                currentAudio.pause();
+                try { currentAudio.stop(); } catch (e) { }
                 currentAudio = null;
             }
             // UI Updates
@@ -1286,16 +1295,35 @@
             }
         }
         function playAudio(base64Data) {
-            if (currentAudio) currentAudio.pause();
-            updateVoiceState('speaking', 'AI 說話中...');
-            currentAudio = new Audio("data:audio/mp3;base64," + base64Data);
-            currentAudio.onended = () => {
-                currentAudio = null;
-                resetVoiceUI();
-            };
-            currentAudio.play().catch(e => {
-                console.warn('Audio play failed (Autoplay policy?):', e);
-                updateVoiceState('', '點擊麥克風開始說話');
+            if (currentAudio) {
+                try { currentAudio.stop(); } catch (e) { }
+            }
+            // Convert Base64 to ArrayBuffer
+            const binaryString = window.atob(base64Data);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            // Decode and Play with Pitch Shift
+            audioCtx.decodeAudioData(bytes.buffer, function (buffer) {
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                // *** 關鍵調教：利用播放速度改變音調 ***
+                // 1.15 = 提高約 2.5 半音 (Semis)
+                // 讓聲音聽起來更年輕、女性化
+                source.playbackRate.value = 1.15;
+                source.connect(audioCtx.destination);
+                updateVoiceState('speaking', 'AI 說話中...');
+                source.onended = () => {
+                    currentAudio = null;
+                    resetVoiceUI();
+                };
+                source.start(0);
+                currentAudio = source;
+            }, function (e) {
+                console.error("Audio decode failed", e);
+                updateVoiceState('', '語音解碼失敗');
             });
         }
         function appendMessage(text, sender) {
