@@ -587,7 +587,11 @@
             const article = document.createElement('article');
             article.className = 'data-card';
             // Image logic
-            let imgSrc = item['照片'];
+            let rawImg = item['照片'];
+            let imgSrc = '';
+            if (rawImg != null && rawImg !== '') {
+                imgSrc = String(rawImg);
+            }
             const hasImage = imgSrc && imgSrc.trim().length > 0;
             const imageContainer = document.createElement('div');
             imageContainer.className = 'card-image';
