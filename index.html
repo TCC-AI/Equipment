@@ -475,7 +475,146 @@
         .logout-btn:hover {
             background-color: var(--accent-color);
             color: white;
-        }
+            .logout-btn:hover {
+                background-color: var(--accent-color);
+                color: white;
+            }
+            /* --- AI Assistant Chat UI --- */
+            .chat-fab {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 70px;
+                height: 70px;
+                background: white;
+                border-radius: 50%;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid var(--primary-color);
+            }
+            .chat-fab:hover {
+                transform: scale(1.1);
+            }
+            .chat-fab img {
+                width: 80%;
+                height: 80%;
+                object-fit: contain;
+            }
+            .chat-window {
+                position: fixed;
+                bottom: 110px;
+                right: 30px;
+                width: 380px;
+                height: 500px;
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+                display: flex;
+                flex-direction: column;
+                z-index: 1000;
+                transform-origin: bottom right;
+                transition: all 0.3s ease;
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.9);
+            }
+            .chat-window.active {
+                opacity: 1;
+                pointer-events: all;
+                transform: scale(1);
+            }
+            .chat-header {
+                padding: 15px 20px;
+                background: var(--primary-color);
+                color: white;
+                border-radius: 16px 16px 0 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: 700;
+            }
+            .chat-body {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                background-color: #f9f9f9;
+            }
+            .chat-message {
+                max-width: 80%;
+                padding: 10px 15px;
+                border-radius: 12px;
+                font-size: 0.95rem;
+                line-height: 1.4;
+                word-wrap: break-word;
+            }
+            .chat-message.bot {
+                align-self: flex-start;
+                background: white;
+                border: 1px solid #eee;
+                color: var(--text-primary);
+                border-radius: 12px 12px 12px 0;
+            }
+            .chat-message.user {
+                align-self: flex-end;
+                background: var(--primary-color);
+                color: white;
+                border-radius: 12px 12px 0 12px;
+            }
+            .chat-footer {
+                padding: 15px;
+                border-top: 1px solid #eee;
+                display: flex;
+                gap: 10px;
+                background: white;
+                border-radius: 0 0 16px 16px;
+            }
+            .chat-input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                outline: none;
+            }
+            .chat-send-btn {
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background 0.2s;
+            }
+            .chat-send-btn:hover {
+                background: #357ABD;
+            }
+            .typing-indicator {
+                align-self: flex-start;
+                background: #eee;
+                padding: 5px 10px;
+                border-radius: 10px;
+                font-size: 0.8rem;
+                color: #777;
+                display: none;
+            }
+            @media (max-width: 480px) {
+                .chat-window {
+                    width: 90%;
+                    right: 5%;
+                    bottom: 100px;
+                }
+            }
     </style>
 </head>
 <body>
@@ -485,7 +624,7 @@
             <div style="margin-bottom: 20px;">
                 <img src="logo1.png" alt="System Logo" style="height: 80px; width: auto;">
             </div>
-            <h2>【昶青集團】<br>設備資產管理系統登入</h2>
+            <h2>系統登入</h2>
             <form id="loginForm">
                 <div class="input-group">
                     <label>帳號 (Account)</label>
@@ -504,7 +643,7 @@
         <header class="main-header">
             <div class="logo-area">
                 <img src="logo1.png" alt="Logo" style="height: 40px; width: auto;">
-                <h1>【昶青集團】設備資產管理系統</h1>
+                <h1>設備管理系統</h1>
             </div>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -534,6 +673,29 @@
             </div>
         </main>
     </div>
+    <!-- AI Assistant Chat -->
+    <div class="chat-fab" onclick="toggleChat()">
+        <img src="logo2.png" alt="AI Assistant">
+    </div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span>設備管理小幫手 (AI)</span>
+            <span style="cursor: pointer;" onclick="toggleChat()">&times;</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-message bot">
+                你好！我是您的專屬設備管理助理。您可以問我任何關於設備的問題，例如：「庫存還有多少？」或「哪個部門資產最多？」
+            </div>
+            <div class="typing-indicator" id="typingIndicator">思考中...</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" id="chatInput" placeholder="輸入問題..."
+                onkeypress="handleChatKey(event)">
+            <button class="chat-send-btn" onclick="sendChatMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
     <!-- Modal for Image Preview -->
     <div id="imageModal" class="modal hidden">
         <span class="close-modal">&times;</span>
@@ -545,7 +707,7 @@
          * Config
          * Replace this URL with your actual Google Apps Script Web App URL
          */
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzcB4P1YpOwOpz942TouYAnCjxhnjfaduuumhK9S2f4vXIh6akFA_iqxXEW47Vic1ZMUg/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxd0rTuYLWdLLDqt5ltqZ-HbKBe-xqfTEEBYo0HvGgRkMtZZVDxM23mLa7v45qfxZalCw/exec';
         // State
         let allSheets = [];
         let currentData = [];
@@ -840,6 +1002,92 @@
             }
             return null;
         }
+        /* --- Chat Functions --- */
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('active');
+            if (chatWindow.classList.contains('active')) {
+                document.getElementById('chatInput').focus();
+            }
+        }
+        function handleChatKey(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            const chatBody = document.getElementById('chatBody');
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (!message) return;
+            // Add User Message
+            appendMessage(message, 'user');
+            input.value = '';
+            // Show Typing Indicator
+            typingIndicator.style.display = 'block';
+            chatBody.scrollTop = chatBody.scrollHeight;
+            try {
+                // Use POST for Chat to handle longer content
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // standard workaround for GAS simple triggers if not needed strict JSON
+                    // BUT for reading response we need proper setting.
+                    // Actually standard fetch to GAS Web App with 'follow' redirect usually works for GET.
+                    // For POST, it's trickier with CORS.
+                    // Let's try standard POST. If GAS is set to "Anyone", it should work with text/plain.
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                    },
+                    body: JSON.stringify({
+                        type: 'chat',
+                        message: message
+                    })
+                });
+                // GAS POST often returns 302. fetch follows automatically.
+                const data = await response.json();
+                typingIndicator.style.display = 'none';
+                if (data.status === 'success') {
+                    appendMessage(data.reply, 'bot');
+                } else {
+                    appendMessage('抱歉，系統發生錯誤：' + (data.message || '未知原因'), 'bot');
+                }
+            } catch (error) {
+                console.error('Chat Error:', error);
+                typingIndicator.style.display = 'none';
+                appendMessage('連線失敗，請檢查網路或稍後再試。', 'bot');
+            }
+        }
+        function appendMessage(text, sender) {
+            const chatBody = document.getElementById('chatBody');
+            const typingIndicator = document.getElementById('typingIndicator');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-message ${sender}`;
+            msgDiv.textContent = text;
+            // Insert before typing indicator
+            chatBody.insertBefore(msgDiv, typingIndicator);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
     </script>
+    <!-- Chat Button -->
+    <button id="chatButton" class="chat-button" onclick="toggleChat()">
+        <i class="fa-solid fa-comments"></i>
+    </button>
+    <!-- Chat Window -->
+    <div id="chatWindow" class="chat-window">
+        <div class="chat-header">
+            <h3>AI 助理</h3>
+            <button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="chatBody" class="chat-body">
+            <div id="typingIndicator" class="typing-indicator" style="display: none;">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="輸入訊息..." onkeypress="handleChatKey(event)">
+            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
 </body>
 </html>
