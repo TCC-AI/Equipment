@@ -588,20 +588,33 @@
             article.className = 'data-card';
             // Image logic
             let rawImg = item['照片'];
-            let imgSrc = '';
-            if (rawImg != null && rawImg !== '') {
-                imgSrc = String(rawImg);
+            let driveId = null;
+            if (rawImg) {
+                driveId = extractDriveId(String(rawImg));
             }
-            const hasImage = imgSrc && imgSrc.trim().length > 0;
             const imageContainer = document.createElement('div');
             imageContainer.className = 'card-image';
-            if (hasImage) {
+            if (driveId) {
                 const img = document.createElement('img');
-                img.src = imgSrc;
+                // Strategy 1: "uc" export link (often robust for direct embedding)
+                const primayUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+                // Strategy 2: "thumbnail" link (fallback)
+                const fallbackUrl = `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
+                img.src = primayUrl;
                 img.alt = item['品項名稱'];
                 img.loading = 'lazy';
-                img.referrerPolicy = 'no-referrer'; // Critical for Google Drive images
-                img.onclick = () => openModal(imgSrc, item['品項名稱']);
+                img.referrerPolicy = 'no-referrer';
+                // Self-healing: if primary fails, try fallback
+                img.onerror = function () {
+                    if (this.src === primayUrl) {
+                        console.warn('Primary image failed, switching to fallback:', driveId);
+                        this.src = fallbackUrl;
+                    } else {
+                        // Both failed
+                        this.parentElement.innerHTML = '<div class="card-image-placeholder"><i class="fa-solid fa-triangle-exclamation"></i></div>';
+                    }
+                };
+                img.onclick = () => openModal(img.src, item['品項名稱']);
                 imageContainer.appendChild(img);
             } else {
                 imageContainer.innerHTML = '<div class="card-image-placeholder"><i class="fa-regular fa-image"></i></div>';
@@ -677,19 +690,18 @@
             caption.textContent = captionText;
         }
         /**
-         * Helper to convert Google Drive share links to direct accessible images
+         * Helper to extract Google Drive ID from various URL formats
          */
-        function convertDriveUrl(url) {
-            if (!url) return '';
-            // Regex to find Google Drive ID
-            // Support formats: /file/d/ID/..., id=ID
-            const match = url.match(/\/d\/([-\w]{25,})/) || url.match(/id=([-\w]{25,})/) || url.match(/([-\w]{25,})/);
-            if (match && (url.includes('drive.google.com') || url.includes('docs.google.com'))) {
-                // Return the ID captured in the first group that isn't undefined
-                const id = match[1] || match[0];
-                return `https://lh3.googleusercontent.com/d/${id}`;
+        function extractDriveId(url) {
+            if (!url) return null;
+            // 1. Check for standard ID pattern in URL (alphanumeric + - _)
+            // Matches: /d/ID, id=ID, or simply the ID if the input is just the ID
+            const idRegex = /[-\w]{25,}/;
+            const match = url.match(/\/d\/([-\w]{25,})/) || url.match(/id=([-\w]{25,})/) || url.match(idRegex);
+            if (match) {
+                return match[1] || match[0];
             }
-            return url;
+            return null;
         }
     </script>
 </body>
