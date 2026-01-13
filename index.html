@@ -475,146 +475,278 @@
         .logout-btn:hover {
             background-color: var(--accent-color);
             color: white;
-            .logout-btn:hover {
-                background-color: var(--accent-color);
-                color: white;
+        }
+        /* --- AI Voice Avatar UI --- */
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px 10px;
+            background: linear-gradient(to bottom, var(--primary-color), #f9f9f9);
+            border-radius: 16px 16px 0 0;
+            position: relative;
+        }
+        .avatar-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(74, 144, 226, 0.4);
+            z-index: 1;
+            opacity: 0;
+        }
+        /* State: Speaking */
+        .avatar-wrapper.speaking img {
+            transform: scale(1.1);
+            border-color: #50E3C2;
+        }
+        .avatar-wrapper.speaking .pulse-ring {
+            animation: pulse-animation 1.5s infinite;
+            background: rgba(80, 227, 194, 0.4);
+        }
+        /* State: Listening */
+        .avatar-wrapper.listening img {
+            border-color: #ff6b6b;
+        }
+        .avatar-wrapper.listening .pulse-ring {
+            animation: pulse-animation 1s infinite;
+            background: rgba(255, 107, 107, 0.4);
+        }
+        /* State: Thinking */
+        .avatar-wrapper.thinking img {
+            animation: bounce 1s infinite;
+        }
+        @keyframes pulse-animation {
+            0% {
+                width: 100%;
+                height: 100%;
+                opacity: 0.8;
             }
-            /* --- AI Assistant Chat UI --- */
-            .chat-fab {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                width: 70px;
-                height: 70px;
-                background: white;
-                border-radius: 50%;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-                cursor: pointer;
-                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                z-index: 1000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 2px solid var(--primary-color);
-            }
-            .chat-fab:hover {
-                transform: scale(1.1);
-            }
-            .chat-fab img {
-                width: 80%;
-                height: 80%;
-                object-fit: contain;
-            }
-            .chat-window {
-                position: fixed;
-                bottom: 110px;
-                right: 30px;
-                width: 380px;
-                height: 500px;
-                background: white;
-                border-radius: 16px;
-                box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
-                display: flex;
-                flex-direction: column;
-                z-index: 1000;
-                transform-origin: bottom right;
-                transition: all 0.3s ease;
+            100% {
+                width: 140%;
+                height: 140%;
                 opacity: 0;
-                pointer-events: none;
-                transform: scale(0.9);
             }
-            .chat-window.active {
-                opacity: 1;
-                pointer-events: all;
-                transform: scale(1);
+        }
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0);
             }
-            .chat-header {
-                padding: 15px 20px;
-                background: var(--primary-color);
-                color: white;
-                border-radius: 16px 16px 0 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-weight: 700;
+            50% {
+                transform: translateY(-5px);
             }
-            .chat-body {
-                flex: 1;
-                padding: 20px;
-                overflow-y: auto;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                background-color: #f9f9f9;
+        }
+        .mic-btn {
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            transition: all 0.2s;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mic-btn:hover {
+            transform: scale(1.1);
+            color: var(--primary-color);
+        }
+        .mic-btn.active {
+            background: var(--accent-color);
+            color: white;
+            animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
             }
-            .chat-message {
-                max-width: 80%;
-                padding: 10px 15px;
-                border-radius: 12px;
-                font-size: 0.95rem;
-                line-height: 1.4;
-                word-wrap: break-word;
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
             }
-            .chat-message.bot {
-                align-self: flex-start;
-                background: white;
-                border: 1px solid #eee;
-                color: var(--text-primary);
-                border-radius: 12px 12px 12px 0;
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
             }
-            .chat-message.user {
-                align-self: flex-end;
-                background: var(--primary-color);
-                color: white;
-                border-radius: 12px 12px 0 12px;
+        }
+        /* Adjust Chat Body for new layout */
+        .chat-header {
+            display: none;
+            /* Hide old header */
+        }
+        /* New Close Button */
+        .close-chat-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            /* On primary bg */
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+        /* --- AI Assistant Chat UI --- */
+        .chat-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary-color);
+        }
+        .chat-fab:hover {
+            transform: scale(1.1);
+        }
+        .chat-fab img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
+        }
+        .chat-window {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            width: 380px;
+            height: 500px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transform-origin: bottom right;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.9);
+        }
+        .chat-window.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+        .chat-header {
+            padding: 15px 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #f9f9f9;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .chat-message.bot {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid #eee;
+            color: var(--text-primary);
+            border-radius: 12px 12px 12px 0;
+        }
+        .chat-message.user {
+            align-self: flex-end;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 12px;
+        }
+        .chat-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            background: white;
+            border-radius: 0 0 16px 16px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+        .chat-send-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .chat-send-btn:hover {
+            background: #357ABD;
+        }
+        .typing-indicator {
+            align-self: flex-start;
+            background: #eee;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #777;
+            display: none;
+        }
+        @media (max-width: 480px) {
+            .chat-window {
+                width: 90%;
+                right: 5%;
+                bottom: 100px;
             }
-            .chat-footer {
-                padding: 15px;
-                border-top: 1px solid #eee;
-                display: flex;
-                gap: 10px;
-                background: white;
-                border-radius: 0 0 16px 16px;
-            }
-            .chat-input {
-                flex: 1;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 20px;
-                outline: none;
-            }
-            .chat-send-btn {
-                background: var(--primary-color);
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: background 0.2s;
-            }
-            .chat-send-btn:hover {
-                background: #357ABD;
-            }
-            .typing-indicator {
-                align-self: flex-start;
-                background: #eee;
-                padding: 5px 10px;
-                border-radius: 10px;
-                font-size: 0.8rem;
-                color: #777;
-                display: none;
-            }
-            @media (max-width: 480px) {
-                .chat-window {
-                    width: 90%;
-                    right: 5%;
-                    bottom: 100px;
-                }
-            }
+        }
     </style>
 </head>
 <body>
@@ -678,18 +810,28 @@
         <img src="logo2.png" alt="AI Assistant">
     </div>
     <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-            <span>設備管理小幫手 (AI)</span>
-            <span style="cursor: pointer;" onclick="toggleChat()">&times;</span>
+        <!-- New Avatar Header -->
+        <div class="avatar-container">
+            <button class="close-chat-btn" onclick="toggleChat()">&times;</button>
+            <div class="avatar-wrapper" id="avatarWrapper">
+                <img src="logo2.png" alt="Digital Human">
+                <div class="pulse-ring"></div>
+            </div>
+            <button class="mic-btn" id="micBtn" onclick="toggleListening()">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            <p id="voiceStatus"
+                style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; height: 1.2em;">點擊麥克風開始說話</p>
         </div>
         <div class="chat-body" id="chatBody">
             <div class="chat-message bot">
-                你好！我是您的專屬設備管理助理。您可以問我任何關於設備的問題，例如：「庫存還有多少？」或「哪個部門資產最多？」
+                你好！我是您的專屬數位助理。您可以點擊上方麥克風直接跟我對話，或在下方輸入文字。
             </div>
+            <!-- Typing indicator exists in CSS but added dynamically via JS usually, ensuring structure -->
             <div class="typing-indicator" id="typingIndicator">思考中...</div>
         </div>
         <div class="chat-footer">
-            <input type="text" class="chat-input" id="chatInput" placeholder="輸入問題..."
+            <input type="text" class="chat-input" id="chatInput" placeholder="輸入訊息..."
                 onkeypress="handleChatKey(event)">
             <button class="chat-send-btn" onclick="sendChatMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
@@ -707,7 +849,7 @@
          * Config
          * Replace this URL with your actual Google Apps Script Web App URL
          */
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwIBWVJ5Uw2u7nxMsIibdEcSKZlOn9uos1nJnBnyyvpIIj9VMVGAT5v-3qnAYVDyZP4-w/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxXfxxFgm-nYLdUzLW7CaLQXQ0fNZ2zQ9Vvdq3lRuI576Q229xAAp7XIlZJ21QiAhrlvA/exec';
         // State
         let allSheets = [];
         let currentData = [];
@@ -1002,11 +1144,90 @@
             }
             return null;
         }
-        /* --- Chat Functions --- */
+        /* --- Chat & Voice Functions --- */
+        let recognition = null;
+        let isListening = false;
+        let currentAudio = null;
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'zh-TW';
+            recognition.onstart = () => {
+                isListening = true;
+                updateVoiceState('listening', '正在聽您說話...');
+                document.getElementById('micBtn').classList.add('active');
+            };
+            recognition.onend = () => {
+                // Determine if we stopped due to result or silence
+                // If isListening is still true (meaning checking ended but no result or manual stop), reset
+                if (isListening) {
+                    // Often onend fires after onresult, let onresult handle the UI change if successful
+                    // If manual stop or timeout, we reset here
+                    if (document.getElementById('voiceStatus').innerText === '正在聽您說話...') {
+                        resetVoiceUI();
+                    }
+                }
+            };
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                resetVoiceUI();
+                // Put text in input for visibility
+                document.getElementById('chatInput').value = transcript;
+                // Auto send
+                sendChatMessage();
+            };
+            recognition.onerror = (event) => {
+                console.error('Speech Error:', event.error);
+                resetVoiceUI();
+                updateVoiceState(null, '語音辨識錯誤');
+            };
+        } else {
+            document.getElementById('micBtn').style.display = 'none'; // Hide if not supported
+        }
+        function toggleListening() {
+            if (!recognition) {
+                alert('您的瀏覽器不支援語音功能');
+                return;
+            }
+            // If audio playing, stop it
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+                resetVoiceUI();
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+                resetVoiceUI();
+            } else {
+                recognition.start();
+            }
+        }
+        function updateVoiceState(state, text) {
+            const avatarWrapper = document.getElementById('avatarWrapper');
+            const statusText = document.getElementById('voiceStatus');
+            // Classes: listening, speaking, thinking
+            avatarWrapper.className = 'avatar-wrapper ' + (state || '');
+            if (text) statusText.innerText = text;
+        }
+        function resetVoiceUI() {
+            isListening = false;
+            document.getElementById('micBtn').classList.remove('active');
+            updateVoiceState('', '點擊麥克風開始說話');
+        }
         function toggleChat() {
             const chatWindow = document.getElementById('chatWindow');
             chatWindow.classList.toggle('active');
-            if (chatWindow.classList.contains('active')) {
+            // If closing, stop audio
+            if (!chatWindow.classList.contains('active')) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+                resetVoiceUI();
+            } else {
                 document.getElementById('chatInput').focus();
             }
         }
@@ -1021,37 +1242,60 @@
             const chatBody = document.getElementById('chatBody');
             const typingIndicator = document.getElementById('typingIndicator');
             if (!message) return;
-            // Add User Message
+            // Stop audio if playing
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            // UI Updates
             appendMessage(message, 'user');
             input.value = '';
-            // Show Typing Indicator
             typingIndicator.style.display = 'block';
             chatBody.scrollTop = chatBody.scrollHeight;
+            updateVoiceState('thinking', '思考中...');
             try {
-                // Use POST for Chat to handle longer content
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                    },
-                    body: JSON.stringify({
-                        type: 'chat',
-                        message: message
-                    })
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ type: 'chat', message: message })
                 });
-                // GAS POST often returns 302. fetch follows automatically.
-                const data = await response.json();
+                const responseText = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    throw new Error('Backend returned invalid format');
+                }
                 typingIndicator.style.display = 'none';
+                updateVoiceState('', '點擊麥克風開始說話');
                 if (data.status === 'success') {
                     appendMessage(data.reply, 'bot');
+                    // Handle Audio
+                    if (data.audioData) {
+                        playAudio(data.audioData);
+                    }
                 } else {
-                    appendMessage('抱歉，系統發生錯誤：' + (data.message || '未知原因'), 'bot');
+                    appendMessage('系統錯誤: ' + (data.message || '未知原因'), 'bot');
                 }
             } catch (error) {
                 console.error('Chat Error:', error);
                 typingIndicator.style.display = 'none';
-                appendMessage('連線失敗，請檢查網路或稍後再試。', 'bot');
+                updateVoiceState('', '連線失敗');
+                appendMessage('連線失敗，請檢查網路。', 'bot');
             }
+        }
+        function playAudio(base64Data) {
+            if (currentAudio) currentAudio.pause();
+            updateVoiceState('speaking', 'AI 說話中...');
+            currentAudio = new Audio("data:audio/mp3;base64," + base64Data);
+            currentAudio.onended = () => {
+                currentAudio = null;
+                resetVoiceUI();
+            };
+            currentAudio.play().catch(e => {
+                console.warn('Audio play failed (Autoplay policy?):', e);
+                updateVoiceState('', '點擊麥克風開始說話');
+            });
         }
         function appendMessage(text, sender) {
             const chatBody = document.getElementById('chatBody');
