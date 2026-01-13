@@ -1031,11 +1031,6 @@
                 // Use POST for Chat to handle longer content
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // standard workaround for GAS simple triggers if not needed strict JSON
-                    // BUT for reading response we need proper setting.
-                    // Actually standard fetch to GAS Web App with 'follow' redirect usually works for GET.
-                    // For POST, it's trickier with CORS.
-                    // Let's try standard POST. If GAS is set to "Anyone", it should work with text/plain.
                     headers: {
                         'Content-Type': 'text/plain;charset=utf-8',
                     },
@@ -1069,25 +1064,5 @@
             chatBody.scrollTop = chatBody.scrollHeight;
         }
     </script>
-    <!-- Chat Button -->
-    <button id="chatButton" class="chat-button" onclick="toggleChat()">
-        <i class="fa-solid fa-comments"></i>
-    </button>
-    <!-- Chat Window -->
-    <div id="chatWindow" class="chat-window">
-        <div class="chat-header">
-            <h3>AI 助理</h3>
-            <button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div id="chatBody" class="chat-body">
-            <div id="typingIndicator" class="typing-indicator" style="display: none;">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="輸入訊息..." onkeypress="handleChatKey(event)">
-            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-        </div>
-    </div>
 </body>
 </html>
