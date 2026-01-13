@@ -596,8 +596,8 @@
             imageContainer.className = 'card-image';
             if (driveId) {
                 const img = document.createElement('img');
-                // Strategy 1: "uc" export link (often robust for direct embedding)
-                const primayUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+                // Strategy 1: "lh3" link (Best for galleries, avoids "download quota" errors)
+                const primayUrl = `https://lh3.googleusercontent.com/d/${driveId}`;
                 // Strategy 2: "thumbnail" link (fallback)
                 const fallbackUrl = `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
                 img.src = primayUrl;
