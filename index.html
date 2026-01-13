@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>設備管理清單</title>
+    <title>設備管理系統</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
@@ -99,12 +99,92 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4A90E2 0%, #50E3C2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 1;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+        .login-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-card h2 {
+            margin-bottom: 25px;
+            color: var(--text-primary);
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E0E6ED;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+        .login-btn:hover {
+            background: #357ABD;
+        }
+        .login-btn:disabled {
+            background: #BDC3C7;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: var(--accent-color);
+            margin-top: 15px;
+            font-size: 0.9em;
+            min-height: 20px;
+        }
         /* Navigation Tabs */
         .sheet-nav {
             margin-bottom: 30px;
             overflow-x: auto;
             padding-bottom: 5px;
-            /* For scrollbar space */
         }
         .tabs-list {
             display: flex;
@@ -266,7 +346,8 @@
         .modal {
             display: flex;
             position: fixed;
-            z-index: 100;
+            z-index: 2500;
+            /* Higher than login overlay if needed, but login should block all */
             left: 0;
             top: 0;
             width: 100%;
@@ -372,195 +453,130 @@
             .search-bar {
                 max-width: 100%;
             }
-            .search-bar {
-                max-width: 100%;
-            }
         }
-        /* Login Overlay */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #4A90E2 0%, #50E3C2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 1;
-            transition: opacity 0.5s ease, visibility 0.5s;
-        }
-        .login-overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-        .login-card h2 {
-            margin-bottom: 25px;
-            color: var(--text-primary);
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 0.9em;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #E0E6ED;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        .input-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 10px;
-        }
-        .login-btn:hover {
-            background: #357ABD;
-        }
-        .login-btn:disabled {
-            background: #BDC3C7;
-            cursor: not-allowed;
-        }
-        .error-message {
-            color: var(--accent-color);
-            margin-top: 15px;
-            font-size: 0.9em;
-            min-height: 20px;
-        }
-        <body>< !-- Login Overlay --><div id="loginOverlay" class="login-overlay"><div class="login-card"><div style="font-size: 3rem; color: var(--primary-color); margin-bottom: 10px;"><i class="fa-solid fa-user-shield"></i></div><h2>系統登入</h2><form id="loginForm"><div class="input-group"><label>帳號 (Account)</label><input type="text" id="username" required placeholder="請輸入帳號"></div><div class="input-group"><label>密碼 (Password)</label><input type="password" id="password" required placeholder="請輸入密碼"></div><button type="submit" class="login-btn" id="loginBtn">登入</button><div id="loginError" class="error-message"></div></form></div></div><div class="app-container"><header class="main-header"><div class="logo-area"><i class="fa-solid fa-cubes-stacked"></i><h1>設備管理系統</h1></div><div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="searchInput" placeholder="搜尋品項、編號或說明..."></div></header><nav class="sheet-nav"><div id="loadingTabs" class="loading-spinner small"></div><ul id="sheetTabs" class="tabs-list">< !-- Javascript will populate tabs here --></ul></nav><main class="content-area"><div id="loadingData" class="loading-overlay hidden"><div class="spinner"></div><p>載入資料中...</p></div><div id="cardGrid" class="card-grid">< !-- Javascript will populate cards here --></div><div id="noResults" class="no-results hidden"><i class="fa-regular fa-folder-open"></i><p>沒有找到符合的資料</p></div></main></div>< !-- Modal for Image Preview --><div id="imageModal" class="modal hidden"><span class="close-modal">&times;
-        </span><img class="modal-content" id="modalImage"><div id="caption"></div></div><script>
+    </style>
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-card">
+            <div style="font-size: 3rem; color: var(--primary-color); margin-bottom: 10px;">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h2>系統登入</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>帳號 (Account)</label>
+                    <input type="text" id="username" required placeholder="請輸入帳號">
+                </div>
+                <div class="input-group">
+                    <label>密碼 (Password)</label>
+                    <input type="password" id="password" required placeholder="請輸入密碼">
+                </div>
+                <button type="submit" class="login-btn" id="loginBtn">登入</button>
+                <div id="loginError" class="error-message"></div>
+            </form>
+        </div>
+    </div>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="logo-area">
+                <i class="fa-solid fa-cubes-stacked"></i>
+                <h1>設備管理系統</h1>
+            </div>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput" placeholder="搜尋品項、編號或說明...">
+            </div>
+        </header>
+        <nav class="sheet-nav">
+            <div id="loadingTabs" class="loading-spinner small"></div>
+            <ul id="sheetTabs" class="tabs-list">
+                <!-- Javascript will populate tabs here -->
+            </ul>
+        </nav>
+        <main class="content-area">
+            <div id="loadingData" class="loading-overlay hidden">
+                <div class="spinner"></div>
+                <p>載入資料中...</p>
+            </div>
+            <div id="cardGrid" class="card-grid">
+                <!-- Javascript will populate cards here -->
+            </div>
+            <div id="noResults" class="no-results hidden">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>沒有找到符合的資料</p>
+            </div>
+        </main>
+    </div>
+    <!-- Modal for Image Preview -->
+    <div id="imageModal" class="modal hidden">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div id="caption"></div>
+    </div>
+    <script>
         /**
          * Config
          * Replace this URL with your actual Google Apps Script Web App URL
          */
-        const API_URL='https://script.google.com/macros/s/AKfycbzCx_KjMUVjqBJP1EDsxe8m64GKOsoi8xPvp3fCq6mx2lrYzbbsxOkgPHJIQgZv7Ga-SQ/exec'; // e.g., https://script.google.com/macros/s/.../exec
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzCx_KjMUVjqBJP1EDsxe8m64GKOsoi8xPvp3fCq6mx2lrYzbbsxOkgPHJIQgZv7Ga-SQ/exec';
         // State
-        let allSheets=[];
-        let currentData=[];
-        let currentOriginalData=[]; // Store original data for filtering
-        // Mock Data for local testing (When API_URL is not set or fetch fails)
-        const MOCK_DATA= {
-            '總青': [ {
-                '編號': '1', '部門別': '總青', '採購編碼': '2512-L2-0101001-1-A12', '品項名稱': 'VOLVO車頭-26T',
-                    '屬性': '固定資產', '數量': 1, '存在與否': '是', '自有或租賃': '自有', '存放處': '總青停車場',
-                    '使用情形': '正常使用', '說明': 'KLJ-3926', '照片': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volvo_FH16_750.jpg/1200px-Volvo_FH16_750.jpg'
-            }
-            ,
-            {
-            '編號': '2', '部門別': '總青', '採購編碼': '2512-L2-0101001-2-A12', '品項名稱': 'VOLVO車頭-26T',
-                '屬性': '固定資產', '數量': 1, '存在與否': '是', '自有或租賃': '自有', '存放處': '總青停車場',
-                '使用情形': '正常使用', '說明': 'KLJ-3983', '照片': ''
-        }
-        ,
-        {
-        '編號': '3', '部門別': '總青', '採購編碼': '2512-L2-0101001-3-A12', '品項名稱': 'HINO車頭',
-            '屬性': '固定資產', '數量': 1, '存在與否': '是', '自有或租賃': '自有', '存放處': '北站停車場',
-            '使用情形': '正常使用', '說明': 'KLJ-5189 (17T)', '照片': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Hino_Profia_SH_Semi_Tractor_001.JPG/1200px-Hino_Profia_SH_Semi_Tractor_001.JPG'
-        }
-        ],
-        '鮮食': [ {
-            '編號': '1', '部門別': '鮮食', '採購編碼': '2001-A1-001', '品項名稱': '冷凍櫃-大型',
-                '屬性': '固定資產', '數量': 2, '存在與否': '是', '自有或租賃': '自有', '存放處': '鮮食倉庫',
-                '使用情形': '正常使用', '說明': '存放肉品', '照片': ''
-        }
-        ]
-        }
-        ;
-        document.addEventListener('DOMContentLoaded', ()=> {
-                // Check if user is already verified (optional, simplified for now: always login)
-                // init(); -> Moved to after login
-                // Event Listeners
-                document.getElementById('loginForm').addEventListener('submit', handleLogin);
-                document.getElementById('searchInput').addEventListener('input', handleSearch);
-                // Modal Close
-                document.querySelector('.close-modal').addEventListener('click', ()=> {
-                        document.getElementById('imageModal').classList.add('hidden');
-                    });
-                window.addEventListener('click', (event)=> {
-                        const modal=document.getElementById('imageModal');
-                        if (event.target==modal) {
-                            modal.classList.add('hidden');
-                        }
-                    });
-                // Tab clicks (Delegation)
-                document.getElementById('sheetTabs').addEventListener('click', (e)=> {
-                        if (e.target.classList.contains('tab-button')) {
-                            switchTab(e.target.dataset.sheet);
-                        }
-                    });
+        let allSheets = [];
+        let currentData = [];
+        let currentOriginalData = []; // Store original data for filtering
+        document.addEventListener('DOMContentLoaded', () => {
+            // Event Listeners
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            // Modal Close
+            document.querySelector('.close-modal').addEventListener('click', () => {
+                document.getElementById('imageModal').classList.add('hidden');
             });
+            window.addEventListener('click', (event) => {
+                const modal = document.getElementById('imageModal');
+                if (event.target == modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+            // Tab clicks (Delegation)
+            document.getElementById('sheetTabs').addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-button')) {
+                    switchTab(e.target.dataset.sheet);
+                }
+            });
+        });
         async function handleLogin(e) {
             e.preventDefault();
-            const user=document.getElementById('username').value;
-            const pass=document.getElementById('password').value;
-            const btn=document.getElementById('loginBtn');
-            const errorMsg=document.getElementById('loginError');
-            if ( !API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
-                errorMsg.textContent='請先設定後端 API URL！';
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('loginError');
+            if (!API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
+                errorMsg.textContent = '請先設定後端 API URL！';
                 return;
             }
-            btn.disabled=true;
-            btn.textContent='驗證中...';
-            errorMsg.textContent='';
+            btn.disabled = true;
+            btn.textContent = '驗證中...';
+            errorMsg.textContent = '';
             try {
                 // Call Backend to verify
-                const response=await fetch(`$ {
-                        API_URL
-                    }
-                    ?type=login&account=$ {
-                        encodeURIComponent(user)
-                    }
-                    &password=$ {
-                        encodeURIComponent(pass)
-                    }
-                    `);
-                const data=await response.json();
-                if (data.status==='success') {
+                const response = await fetch(`${API_URL}?type=login&account=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}`);
+                const data = await response.json();
+                if (data.status === 'success') {
                     // Unlock UI
                     document.getElementById('loginOverlay').classList.add('hidden');
                     init(); // Start loading data
+                } else {
+                    errorMsg.textContent = '帳號或密碼錯誤，請重試。';
+                    btn.disabled = false;
+                    btn.textContent = '登入';
                 }
-                else {
-                    errorMsg.textContent='帳號或密碼錯誤，請重試。';
-                    btn.disabled=false;
-                    btn.textContent='登入';
-                }
-            }
-            catch (err) {
+            } catch (err) {
                 console.error(err);
-                errorMsg.textContent='連線失敗，請檢查網路或 API。';
-                btn.disabled=false;
-                btn.textContent='登入';
+                errorMsg.textContent = '連線失敗，請檢查網路或 API。';
+                btn.disabled = false;
+                btn.textContent = '登入';
             }
         }
         async function init() {
@@ -570,231 +586,226 @@
          * Fetch list of sheets (tabs)
          */
         async function fetchSheets() {
-            const tabsContainer=document.getElementById('sheetTabs');
-            const loadingTabs=document.getElementById('loadingTabs');
+            const tabsContainer = document.getElementById('sheetTabs');
+            const loadingTabs = document.getElementById('loadingTabs');
             try {
-                let sheets=[];
-                // Check if API URL is configured
-                if ( !API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
-                    const grid=document.getElementById('cardGrid');
-                    grid.innerHTML=` <div style="text-align: center; padding: 40px; color: var(--text-secondary);"><i class="fa-solid fa-link-slash" style="font-size: 48px; margin-bottom: 20px; color: var(--accent-color);"></i><h2>尚未連接後端資料庫</h2><p style="margin: 10px 0;">請完成 Google Apps Script 部署，並填入 Web App URL。</p><p style="font-size: 0.9em; color: #95A5A6;">(請參考部署指南 walkthrough.md)</p></div>`;
+                let sheets = [];
+                if (!API_URL || API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
+                    const grid = document.getElementById('cardGrid');
+                    grid.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            <i class="fa-solid fa-link-slash" style="font-size: 48px; margin-bottom: 20px; color: var(--accent-color);"></i>
+                            <h2>尚未連接後端資料庫</h2>
+                            <p style="margin: 10px 0;">請完成 Google Apps Script 部署，並填入 Web App URL。</p>
+                            <p style="font-size: 0.9em; color: #95A5A6;">(請參考部署指南 walkthrough.md)</p>
+                        </div>
+                    `;
                     loadingTabs.classList.add('hidden');
                     return;
                 }
-                const response=await fetch(API_URL);
-                const data=await response.json();
-                if (data.status==='success' && data.type==='list') {
-                    sheets=data.data;
-                }
-                else {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                if (data.status === 'success' && data.type === 'list') {
+                    sheets = data.data;
+                } else {
                     throw new Error(data.message || 'Unknown error');
                 }
-                allSheets=sheets;
+                allSheets = sheets;
                 renderTabs(sheets);
                 if (sheets.length > 0) {
                     switchTab(sheets[0]);
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error fetching sheets:", error);
-                const grid=document.getElementById('cardGrid');
-                grid.innerHTML=` <div style="text-align: center; padding: 40px; color: var(--text-secondary);"><i class="fa-solid fa-circle-exclamation" style="font-size: 48px; margin-bottom: 20px; color: var(--accent-color);"></i><h2>無法讀取資料</h2><p>請確認您的 Google Apps Script 是否已部署，且權限設為「任何人 (Anyone)」。</p><p style="font-size: 0.8em; margin-top: 10px; color: #BDC3C7;">$ {
-                    error.message
-                }
-                </p></div>`;
-            }
-            finally {
+                const grid = document.getElementById('cardGrid');
+                grid.innerHTML = `
+                     <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 48px; margin-bottom: 20px; color: var(--accent-color);"></i>
+                        <h2>無法讀取資料</h2>
+                        <p>請確認您的 Google Apps Script 是否已部署，且權限設為「任何人 (Anyone)」。</p>
+                        <p style="font-size: 0.8em; margin-top: 10px; color: #BDC3C7;">${error.message}</p>
+                    </div>
+                `;
+            } finally {
                 loadingTabs.classList.add('hidden');
             }
         }
         function renderTabs(sheets) {
-            const tabsContainer=document.getElementById('sheetTabs');
-            tabsContainer.innerHTML='';
-            sheets.forEach(sheetName=> {
-                    const li=document.createElement('li');
-                    const btn=document.createElement('button');
-                    btn.className='tab-button';
-                    btn.dataset.sheet=sheetName;
-                    btn.textContent=sheetName;
-                    li.appendChild(btn);
-                    tabsContainer.appendChild(li);
-                });
+            const tabsContainer = document.getElementById('sheetTabs');
+            tabsContainer.innerHTML = '';
+            sheets.forEach(sheetName => {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.className = 'tab-button';
+                btn.dataset.sheet = sheetName;
+                btn.textContent = sheetName;
+                li.appendChild(btn);
+                tabsContainer.appendChild(li);
+            });
         }
         async function switchTab(sheetName) {
             // Update Active Tab
-            document.querySelectorAll('.tab-button').forEach(btn=> {
-                    btn.classList.toggle('active', btn.dataset.sheet===sheetName);
-                });
-            const loadingData=document.getElementById('loadingData');
-            const grid=document.getElementById('cardGrid');
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.sheet === sheetName);
+            });
+            const loadingData = document.getElementById('loadingData');
+            const grid = document.getElementById('cardGrid');
             loadingData.classList.remove('hidden');
-            grid.innerHTML='';
+            grid.innerHTML = '';
             try {
-                let data=[];
+                let data = [];
                 if (API_URL && !API_URL.includes('YOUR_GOOGLE_APPS_SCRIPT')) {
-                    const response=await fetch(`$ {
-                            API_URL
-                        }
-                        ?sheetName=$ {
-                            encodeURIComponent(sheetName)
-                        }
-                        `);
-                    const json=await response.json();
-                    if (json.status==='success' && json.type==='data') {
-                        data=json.data;
+                    const response = await fetch(`${API_URL}?sheetName=${encodeURIComponent(sheetName)}`);
+                    const json = await response.json();
+                    if (json.status === 'success' && json.type === 'data') {
+                        data = json.data;
                     }
                 }
-                else {
-                    // Simulate network delay for better UX feel with mock data
-                    await new Promise(r=> setTimeout(r, 600));
-                    data=MOCK_DATA[sheetName] || [];
-                }
-                currentOriginalData=data;
-                currentData=data;
+                currentOriginalData = data;
+                currentData = data;
                 renderGrid(data);
-            }
-            catch (error) {
+            } catch (error) {
                 console.error("Error fetching data:", error);
-                grid.innerHTML='<p class="error-msg">載入失敗，請重試。</p>';
-            }
-            finally {
+                grid.innerHTML = '<p class="error-msg">載入失敗，請重試。</p>';
+            } finally {
                 loadingData.classList.add('hidden');
             }
         }
         function renderGrid(data) {
-            const grid=document.getElementById('cardGrid');
-            const noResults=document.getElementById('noResults');
-            grid.innerHTML='';
-            if ( !data || data.length===0) {
-                grid.innerHTML='';
+            const grid = document.getElementById('cardGrid');
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = '';
+            if (!data || data.length === 0) {
+                grid.innerHTML = '';
                 noResults.classList.remove('hidden');
                 return;
             }
             noResults.classList.add('hidden');
-            data.forEach(item=> {
-                    const card=createCard(item);
-                    grid.appendChild(card);
-                });
+            data.forEach(item => {
+                const card = createCard(item);
+                grid.appendChild(card);
+            });
         }
         function createCard(item) {
-            const article=document.createElement('article');
-            article.className='data-card';
+            const article = document.createElement('article');
+            article.className = 'data-card';
             // Image logic
-            let rawImg=item['照片'];
-            let driveId=null;
+            let rawImg = item['照片'];
+            let driveId = null;
             if (rawImg) {
-                driveId=extractDriveId(String(rawImg));
+                driveId = extractDriveId(String(rawImg));
             }
-            const imageContainer=document.createElement('div');
-            imageContainer.className='card-image';
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'card-image';
             if (driveId) {
-                const img=document.createElement('img');
-                // Strategy 1: "lh3" link (Best for galleries, avoids "download quota" errors)
-                const primayUrl=`https: //lh3.googleusercontent.com/d/${driveId}`;
+                const img = document.createElement('img');
+                // Strategy 1: "lh3" link (Best for galleries)
+                const primayUrl = `https://lh3.googleusercontent.com/d/${driveId}`;
                 // Strategy 2: "thumbnail" link (fallback)
-                const fallbackUrl=`https: //drive.google.com/thumbnail?id=${driveId}&sz=w800`;
-                img.src=primayUrl;
-                img.alt=item['品項名稱'];
-                img.loading='lazy';
-                img.referrerPolicy='no-referrer';
+                const fallbackUrl = `https://drive.google.com/thumbnail?id=${driveId}&sz=w800`;
+                img.src = primayUrl;
+                img.alt = item['品項名稱'];
+                img.loading = 'lazy';
+                img.referrerPolicy = 'no-referrer';
                 // Self-healing: if primary fails, try fallback
-                img.onerror=function () {
-                    if (this.src===primayUrl) {
+                img.onerror = function () {
+                    if (this.src === primayUrl) {
                         console.warn('Primary image failed, switching to fallback:', driveId);
-                        this.src=fallbackUrl;
-                    }
-                    else {
+                        this.src = fallbackUrl;
+                    } else {
                         // Both failed
-                        this.parentElement.innerHTML='<div class="card-image-placeholder"><i class="fa-solid fa-triangle-exclamation"></i></div>';
+                        this.parentElement.innerHTML = '<div class="card-image-placeholder"><i class="fa-solid fa-triangle-exclamation"></i></div>';
                     }
-                }
-                ;
-                img.onclick=()=>openModal(img.src, item['品項名稱']);
+                };
+                img.onclick = () => openModal(img.src, item['品項名稱']);
                 imageContainer.appendChild(img);
-            }
-            else {
-                imageContainer.innerHTML='<div class="card-image-placeholder"><i class="fa-regular fa-image"></i></div>';
+            } else {
+                imageContainer.innerHTML = '<div class="card-image-placeholder"><i class="fa-regular fa-image"></i></div>';
             }
             // Status logic (Example based on '使用情形')
-            let statusClass='status-green';
-            if (item['使用情形'] && item['使用情形'].includes('異常')) statusClass='status-red';
-            if (item['使用情形'] && item['使用情形'].includes('閒置')) statusClass='status-gray';
-            const content=` <div class="card-content"><div class="card-header"><span class="item-badge">$ {
-                item['屬性'] || '資產'
-            }
-            </span><span class="item-id">#$ {
-                item['編號']
-            }
-            </span></div><h3 class="item-title">$ {
-                item['品項名稱'] || '未命名項目'
-            }
-            </h3><div class="item-details"><div class="detail-row"><span class="detail-label">採購編碼</span><span class="detail-value">$ {
-                item['採購編碼'] || '-'
-            }
-            </span></div><div class="detail-row"><span class="detail-label">部門</span><span class="detail-value">$ {
-                item['部門別'] || '-'
-            }
-            </span></div><div class="detail-row"><span class="detail-label">存放處</span><span class="detail-value">$ {
-                item['存放處'] || '-'
-            }
-            </span></div><div class="detail-row"><span class="detail-label">數量</span><span class="detail-value">$ {
-                item['數量'] || '0'
-            }
-            </span></div></div></div><div class="card-footer"><div class="status-wrap"><span class="status-indicator ${statusClass}"></span>$ {
-                item['使用情形'] || '未知狀態'
-            }
-            · $ {
-                item['自有或租賃'] || ''
-            }
-            </div></div>`;
+            let statusClass = 'status-green';
+            if (item['使用情形'] && item['使用情形'].includes('異常')) statusClass = 'status-red';
+            if (item['使用情形'] && item['使用情形'].includes('閒置')) statusClass = 'status-gray';
+            const content = `
+                <div class="card-content">
+                    <div class="card-header">
+                        <span class="item-badge">${item['屬性'] || '資產'}</span>
+                        <span class="item-id">#${item['編號']}</span>
+                    </div>
+                    <h3 class="item-title">${item['品項名稱'] || '未命名項目'}</h3>
+                    <div class="item-details">
+                        <div class="detail-row">
+                            <span class="detail-label">採購編碼</span>
+                            <span class="detail-value">${item['採購編碼'] || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">部門</span>
+                            <span class="detail-value">${item['部門別'] || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">存放處</span>
+                            <span class="detail-value">${item['存放處'] || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">數量</span>
+                            <span class="detail-value">${item['數量'] || '0'}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="status-wrap">
+                        <span class="status-indicator ${statusClass}"></span>
+                        ${item['使用情形'] || '未知狀態'} · ${item['自有或租賃'] || ''}
+                    </div>
+                </div>
+            `;
             article.appendChild(imageContainer);
-            article.innerHTML+=content;
+            article.innerHTML += content;
             return article;
         }
         function handleSearch(e) {
-            const query=e.target.value.toLowerCase();
-            if ( !query) {
+            const query = e.target.value.toLowerCase();
+            if (!query) {
                 renderGrid(currentOriginalData);
                 return;
             }
-            const filtered=currentOriginalData.filter(item=> {
-                    // Search in specific fields
-                    const searchFields=[ item['品項名稱'],
+            const filtered = currentOriginalData.filter(item => {
+                // Search in specific fields
+                const searchFields = [
+                    item['品項名稱'],
                     item['編號'],
                     item['說明'],
                     item['採購編碼'],
-                    item['存放處']];
-                    return searchFields.some(field=> field && field.toString().toLowerCase().includes(query));
-                });
+                    item['存放處']
+                ];
+                return searchFields.some(field =>
+                    field && field.toString().toLowerCase().includes(query)
+                );
+            });
             renderGrid(filtered);
         }
         function openModal(src, captionText) {
-            const modal=document.getElementById('imageModal');
-            const modalImg=document.getElementById('modalImage');
-            const caption=document.getElementById('caption');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('caption');
             modal.classList.remove('hidden');
-            modalImg.src=src;
-            caption.textContent=captionText;
+            modalImg.src = src;
+            caption.textContent = captionText;
         }
         /**
          * Helper to extract Google Drive ID from various URL formats
          */
         function extractDriveId(url) {
-            if ( !url) return null;
+            if (!url) return null;
             // 1. Check for standard ID pattern in URL (alphanumeric + - _)
             // Matches: /d/ID, id=ID, or simply the ID if the input is just the ID
-            const idRegex=/[-\w] {
-                25,
-            }
-            /;
-            const match=url.match(/\/d\/([-\w] {
-                        25,
-                    })/) || url.match(/id=([-\w] {
-                        25,
-                    })/) || url.match(idRegex);
+            const idRegex = /[-\w]{25,}/;
+            const match = url.match(/\/d\/([-\w]{25,})/) || url.match(/id=([-\w]{25,})/) || url.match(idRegex);
             if (match) {
                 return match[1] || match[0];
             }
             return null;
         }
-        </script></body></html>
+    </script>
+</body>
+</html>
