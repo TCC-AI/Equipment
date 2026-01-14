@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【昶青集團】設備資本管理系統</title>
+    <title>設備管理系統</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
@@ -757,7 +757,7 @@
             <div style="margin-bottom: 20px;">
                 <img src="logo1.png" alt="System Logo" style="height: 80px; width: auto;">
             </div>
-            <h2>【昶青集團】<br>設備資本管理系統</h2>
+            <h2>系統登入</h2>
             <form id="loginForm">
                 <div class="input-group">
                     <label>帳號 (Account)</label>
@@ -776,7 +776,7 @@
         <header class="main-header">
             <div class="logo-area">
                 <img src="logo1.png" alt="Logo" style="height: 40px; width: auto;">
-                <h1>【昶青集團】設備資本管理系統</h1>
+                <h1>設備管理系統</h1>
             </div>
             <div class="search-bar">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -822,11 +822,11 @@
                 <i class="fa-solid fa-microphone"></i>
             </button>
             <p id="voiceStatus"
-                style="font-size: 0.8rem; color: rgba(255,155,155,0.9); margin-top: 5px; height: 1.2em;">資產管理數位主任Jennie<br>   點擊麥克風開始說話</p>
+                style="font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-top: 5px; height: 1.2em;">點擊麥克風開始說話</p>
         </div>
         <div class="chat-body" id="chatBody">
             <div class="chat-message bot">
-                你好！我是【昶青資產管理數位主任Jennie】。<br>您可以點擊上方麥克風直接跟我對話，或在下方輸入文字。
+                你好！我是您的專屬數位助理。您可以點擊上方麥克風直接跟我對話，或在下方輸入文字。
             </div>
             <!-- Typing indicator exists in CSS but added dynamically via JS usually, ensuring structure -->
             <div class="typing-indicator" id="typingIndicator">思考中...</div>
@@ -850,7 +850,7 @@
          * Config
          * Replace this URL with your actual Google Apps Script Web App URL
          */
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxUavVAhEwAl75kL9-XZKCq0OaiM6snGOukwCEWoMz_gwnaZncJgQMyaSuW4uppDNKzCA/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyV-NfNonLXAF6Z8IsL4OxWqMH6z10NGLGFerc7UqHA6ksQD3QMpYQCanp7pliXtyptJA/exec';
         // State
         let allSheets = [];
         let currentData = [];
@@ -1271,10 +1271,8 @@
                 updateVoiceState('', '點擊麥克風開始說話');
                 if (data.status === 'success') {
                     appendMessage(data.reply, 'bot');
-                    // Handle Audio
-                    if (data.audioData) {
-                        playAudio(data.audioData);
-                    }
+                    // 2. Fetch Audio in background (Async)
+                    fetchAudioAndPlay(data.reply);
                 } else {
                     appendMessage('系統錯誤: ' + (data.message || '未知原因'), 'bot');
                 }
@@ -1283,6 +1281,25 @@
                 typingIndicator.style.display = 'none';
                 updateVoiceState('', '連線失敗');
                 appendMessage('連線失敗，請檢查網路。', 'bot');
+            }
+        }
+        async function fetchAudioAndPlay(text) {
+            // Don't generate audio for error messages
+            if (text.startsWith('AI 連線失敗') || text.startsWith('AI 連線錯誤')) return;
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ type: 'tts', text: text })
+                });
+                const data = await response.json();
+                if (data.status === 'success' && data.audioData) {
+                    playAudio(data.audioData);
+                } else {
+                    console.warn('TTS fetch failed or no audio returned');
+                }
+            } catch (e) {
+                console.error('TTS Network Error:', e);
             }
         }
         function playAudio(base64Data) {
